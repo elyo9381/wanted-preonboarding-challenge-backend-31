@@ -1,8 +1,48 @@
-.idea
-*.iml
+# Python
 *.pyc
 __pycache__/
-
-build/
-dist/
 *.egg-info/
+
+# Gradle
+.gradle/
+build/ # 루트 레벨의 build 디렉터리
+
+# Spring Boot / Java 
+HELP.md
+cqrs-exam/build/
+!cqrs-exam/gradle/wrapper/gradle-wrapper.jar
+!cqrs-exam/**/src/main/**/build/
+!cqrs-exam/**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/ 
+cqrs-exam/bin/
+!cqrs-exam/**/src/main/**/bin/
+!cqrs-exam/**/src/test/**/bin/
+
+### IntelliJ IDEA  ###
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+cqrs-exam/out/
+!cqrs-exam/**/src/main/**/out/
+!cqrs-exam/**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/ 
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
