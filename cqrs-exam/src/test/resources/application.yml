@@ -1,0 +1,6 @@
+spring.application.name: cqrs-test
+
+spring:
+  config:
+    import:
+      - cqrs.yml
