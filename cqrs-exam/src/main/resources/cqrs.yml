@@ -55,7 +55,7 @@ storage:
   datasource:
     core:
       driver-class-name: org.postgresql.Driver
-      jdbc-url: jdbc:postgresql://localhost:5432/spring-db
+      jdbc-url: jdbc:postgresql://localhost:15432/spring-db
       username: user
       password: password
       maximum-pool-size: 5
