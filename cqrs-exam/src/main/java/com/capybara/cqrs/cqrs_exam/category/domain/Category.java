@@ -1,19 +1,19 @@
 package com.capybara.cqrs.cqrs_exam.category.domain; // 패키지 경로 오타 가능성 인지
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "categories")
+@Builder
 public class Category {
 
     @Id

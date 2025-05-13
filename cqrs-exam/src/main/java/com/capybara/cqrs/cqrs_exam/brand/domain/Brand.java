@@ -1,11 +1,15 @@
 package com.capybara.cqrs.cqrs_exam.brand.domain;
 
+import com.capybara.cqrs.cqrs_exam.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,5 +41,5 @@ public class Brand {
 
     @OneToMany(mappedBy = "brand" , cascade = {CascadeType.PERSIST , CascadeType.MERGE})
     @Builder.Default
-    private List<Product> products = new ArrayLIst<>();
+    private List<Product> products = new ArrayList<>();
 }

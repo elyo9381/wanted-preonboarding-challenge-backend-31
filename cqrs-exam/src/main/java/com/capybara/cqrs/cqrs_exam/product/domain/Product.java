@@ -1,11 +1,12 @@
 package com.capybara.cqrs.cqrs_exam.product.domain;
 
 import com.capybara.cqrs.cqrs_exam.brand.domain.Brand;
+import com.capybara.cqrs.cqrs_exam.category.domain.Category;
+import com.capybara.cqrs.cqrs_exam.review.domain.Review;
 import com.capybara.cqrs.cqrs_exam.seller.domain.Seller;
+import com.capybara.cqrs.cqrs_exam.tag.domain.Tag;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
@@ -52,82 +55,69 @@ public class Product {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String status;
+    private ProductStatus status;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private ProductDetail productDetail;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductDetail detail;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductPrice price;
+
+    // Category를 ManyToMany 관계로 직접 참조
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    @Builder.Default
+    private List<Category> categories = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductPrice> productPrices = new ArrayList<>();
+    @Builder.Default
+    private List<ProductOptionGroup> optionGroups = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductCategory> productCategories = new ArrayList<>();
+    @Builder.Default
+    private List<ProductImage> images = new ArrayList<>();
+
+    // Tag도 ManyToMany 관계로 직접 참조
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "product_tags",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @Builder.Default
+    private List<Tag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOptionGroup> productOptionGroups = new ArrayList<>();
+    @Builder.Default
+    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> productImages = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductTag> productTags = new ArrayList<>();
-
-    // 편의 메서드 (양방향 연관관계 설정)
-    public void setProductDetail(ProductDetail productDetail) {
-        this.productDetail = productDetail;
-        if (productDetail != null && productDetail.getProduct() != this) {
-            productDetail.setProduct(this);
+    // Helper methods
+    public void addCategory(Category category) {
+        if (!categories.contains(category)) {
+            categories.add(category);
         }
     }
 
-    public void addProductPrice(ProductPrice productPrice) {
-        productPrices.add(productPrice);
-        productPrice.setProduct(this);
+    public void addOptionGroup(ProductOptionGroup optionGroup) {
+        optionGroup.setProduct(this);
+        optionGroups.add(optionGroup);
     }
 
-    public void removeProductPrice(ProductPrice productPrice) {
-        productPrices.remove(productPrice);
-        productPrice.setProduct(null);
+    public void addImage(ProductImage image) {
+        image.setProduct(this);
+        images.add(image);
     }
 
-    public void addProductCategory(ProductCategory productCategory) {
-        productCategories.add(productCategory);
-        productCategory.setProduct(this);
+    public void addTag(Tag tag) {
+        if (!tags.contains(tag)) {
+            tags.add(tag);
+        }
     }
 
-    public void removeProductCategory(ProductCategory productCategory) {
-        productCategories.remove(productCategory);
-        productCategory.setProduct(null);
-    }
-
-    public void addProductOptionGroup(ProductOptionGroup productOptionGroup) {
-        productOptionGroups.add(productOptionGroup);
-        productOptionGroup.setProduct(this);
-    }
-
-    public void removeProductOptionGroup(ProductOptionGroup productOptionGroup) {
-        productOptionGroups.remove(productOptionGroup);
-        productOptionGroup.setProduct(null);
-    }
-
-    public void addProductImage(ProductImage productImage) {
-        productImages.add(productImage);
-        productImage.setProduct(this);
-    }
-
-    public void removeProductImage(ProductImage productImage) {
-        productImages.remove(productImage);
-        productImage.setProduct(null);
-    }
-
-    public void addProductTag(ProductTag productTag) {
-        productTags.add(productTag);
-        productTag.setProduct(this);
-    }
-
-    public void removeProductTag(ProductTag productTag) {
-        productTags.remove(productTag);
-        productTag.setProduct(null);
-    }
 }
